@@ -3,45 +3,57 @@
 namespace IRIS.Bluetooth.Common.Abstract
 {
     /// <summary>
-    ///     Represents bluetooth characteristic.
+    ///     Represents a Bluetooth Low Energy (BLE) characteristic, which is a data point that can be read, written, or monitored for changes.
     /// </summary>
     public interface IBluetoothLECharacteristic
     {
         /// <summary>
-        ///     Device that owns this characteristic and parent service
+        ///     Gets the device that owns this characteristic and its parent service.
         /// </summary>
+        /// <remarks>
+        ///     This is a convenience property that returns the device from the parent service.
+        /// </remarks>
         public IBluetoothLEDevice Device => Service.Device;
         
         /// <summary>
-        /// Service that owns this characteristic
+        ///     Gets the service that owns this characteristic.
         /// </summary>
+        /// <remarks>
+        ///     Every characteristic must belong to a service in the BLE protocol.
+        /// </remarks>
         public IBluetoothLEService Service { get; }
         
         /// <summary>
-        ///     Service UUID (in string format)
+        ///     Gets the UUID of this characteristic in string format.
         /// </summary>
+        /// <remarks>
+        ///     The UUID uniquely identifies the type of characteristic and its behavior.
+        /// </remarks>
         public string UUID { get; }
         
         /// <summary>
-        ///     True if characteristic can be read
+        ///     Gets a value indicating whether this characteristic can be read.
         /// </summary>
         public bool IsRead { get; }
         
         /// <summary>
-        ///     True if characteristic can be written
+        ///     Gets a value indicating whether this characteristic can be written to.
         /// </summary>
         public bool IsWrite { get; }
         
         /// <summary>
-        ///     True if characteristic can be notified
+        ///     Gets a value indicating whether this characteristic supports notifications.
         /// </summary>
+        /// <remarks>
+        ///     When notifications are enabled, the device will automatically send updates when the characteristic value changes.
+        /// </remarks>
         public bool IsNotify { get; }
         
         /// <summary>
-        ///     Check if this characteristic is valid for specified flags
+        ///     Checks if this characteristic supports the specified combination of operations.
         /// </summary>
-        /// <param name="flags">Flags to check</param>
-        /// <returns>True if flags matches, false otherwise</returns>
+        /// <param name="flags">The combination of operations to check for</param>
+        /// <returns>True if the characteristic supports all specified operations, false otherwise</returns>
         public bool IsValidForFlags(CharacteristicFlags flags)
         {
             if (flags.HasFlag(CharacteristicFlags.Read) && !IsRead) return false;
@@ -52,37 +64,43 @@ namespace IRIS.Bluetooth.Common.Abstract
         }
         
         /// <summary>
-        ///     Raised when the characteristic value changes.
+        ///     Event raised when the characteristic value changes.
         /// </summary>
-        internal event CharacteristicValueChanged ValueChanged;
+        /// <remarks>
+        ///     This event is internal and should only be used by the implementation.
+        /// </remarks>
+        internal event CharacteristicValueChangedHandler ValueChanged;
         
         /// <summary>
-        ///     Read the characteristic value.
+        ///     Reads the current value of the characteristic.
         /// </summary>
         /// <param name="cancellationToken">Token to cancel the operation</param>
-        /// <returns>Value of the characteristic or null if failed</returns>
+        /// <returns>The characteristic value as a byte array, or null if the read operation failed</returns>
         public ValueTask<byte[]?> ReadAsync(CancellationToken cancellationToken = default);
         
         /// <summary>
-        ///     Write the characteristic value.
+        ///     Writes a new value to the characteristic.
         /// </summary>
-        /// <param name="data">Data to write</param>
+        /// <param name="data">The data to write to the characteristic</param>
         /// <param name="cancellationToken">Token to cancel the operation</param>
-        /// <returns>True if write was successful, false otherwise</returns>
+        /// <returns>True if the write operation was successful, false otherwise</returns>
         public ValueTask<bool> WriteAsync(byte[] data, CancellationToken cancellationToken = default);
      
         /// <summary>
-        ///     Subscribe to characteristic value changes.
+        ///     Subscribes to notifications for this characteristic.
         /// </summary>
         /// <param name="cancellationToken">Token to cancel the operation</param>
-        /// <returns>True if subscription was successful (or already subscribed), false otherwise</returns>
+        /// <returns>True if the subscription was successful or already active, false otherwise</returns>
+        /// <remarks>
+        ///     After subscribing, the device will automatically send updates when the characteristic value changes.
+        /// </remarks>
         public ValueTask<bool> SubscribeAsync(CancellationToken cancellationToken = default);
         
         /// <summary>
-        ///     Unsubscribe from characteristic value changes.
+        ///     Unsubscribes from notifications for this characteristic.
         /// </summary>
         /// <param name="cancellationToken">Token to cancel the operation</param>
-        /// <returns>True if un-subscription was successful (or already unsubscribed), false otherwise</returns>
+        /// <returns>True if the unsubscription was successful or already inactive, false otherwise</returns>
         public ValueTask<bool> UnsubscribeAsync(CancellationToken cancellationToken = default);
     }
 }

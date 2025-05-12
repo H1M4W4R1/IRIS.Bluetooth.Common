@@ -32,10 +32,10 @@ namespace IRIS.Bluetooth.Common.Abstract
         /// <param name="device">Device to release</param>
         public void ReleaseDevice(IBluetoothLEDevice device);
         
-        public event DeviceDiscovered OnBluetoothDeviceDiscovered;
-        public event DeviceConnected OnBluetoothDeviceConnected;
-        public event DeviceDisconnected OnBluetoothDeviceDisconnected;
-        public event DeviceConnectionLost OnBluetoothDeviceConnectionLost;
+        public event DeviceDiscoveredHandler OnBluetoothDeviceDiscovered;
+        public event DeviceConnectedHandler OnBluetoothDeviceConnected;
+        public event DeviceDisconnectedHandler OnBluetoothDeviceDisconnected;
+        public event DeviceConnectionLostHandler OnBluetoothDeviceConnectionLost;
     }
 
 
