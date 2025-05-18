@@ -18,19 +18,19 @@ namespace IRIS.Bluetooth.Common.Abstract
         public IReadOnlyList<IBluetoothLEDevice> DiscoveredDevices { get; }
         
         public IReadOnlyList<IBluetoothLEDevice> ConnectedDevices { get; }
-        
+
         /// <summary>
         ///     Claim device to be used for communication.
         /// </summary>
         /// <param name="cancellationToken">Token to cancel the operation</param>
         /// <returns>Device that was claimed or null if failed</returns>
-        public IBluetoothLEDevice? ClaimDevice(CancellationToken cancellationToken = default);
-        
+        public ValueTask<IBluetoothLEDevice?> ClaimDevice(CancellationToken cancellationToken = default);
+
         /// <summary>
         ///     Release device that was claimed for communication.
         /// </summary>
         /// <param name="device">Device to release</param>
-        public void ReleaseDevice(IBluetoothLEDevice device);
+        public ValueTask ReleaseDevice(IBluetoothLEDevice device);
         
         public event DeviceDiscoveredHandler OnBluetoothDeviceDiscovered;
         public event DeviceConnectedHandler OnBluetoothDeviceConnected;

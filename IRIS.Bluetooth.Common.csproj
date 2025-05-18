@@ -13,4 +13,8 @@
       <ProjectReference Include="..\IRIS\IRIS.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Utility\" />
+    </ItemGroup>
+
 </Project>
