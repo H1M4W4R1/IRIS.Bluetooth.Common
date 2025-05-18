@@ -23,6 +23,11 @@
         public ulong DeviceAddress { get; }
         
         /// <summary>
+        ///     Checks if the device is currently configured.
+        /// </summary>
+        public bool IsConfigured { get; }
+        
+        /// <summary>
         ///     Gets all services available on this device.
         /// </summary>
         /// <remarks>
@@ -58,5 +63,10 @@
         /// <param name="serviceUUIDRegex">Regular expression pattern to match service UUIDs</param>
         /// <returns>A read-only list of matching services</returns>
         public IReadOnlyList<IBluetoothLEService> GetAllServicesForUUID(string serviceUUIDRegex);
+
+        /// <summary>
+        /// Event raised when device is configured
+        /// </summary>
+        public event DeviceConfiguredHandler DeviceConfigured;
     }
 }
