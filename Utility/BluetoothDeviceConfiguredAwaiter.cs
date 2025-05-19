@@ -4,8 +4,7 @@ using IRIS.Bluetooth.Common.Abstract;
 namespace IRIS.Bluetooth.Common.Utility
 {
     public sealed class BluetoothDeviceConfiguredAwaiter(IBluetoothLEDevice device,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken = default)
         : INotifyCompletion
     {
         private Action _continuation = null!;
@@ -15,7 +14,7 @@ namespace IRIS.Bluetooth.Common.Utility
 
         public void GetResult()
         {
-            // Do nothing
+            device.DeviceConfigured -= OnDeviceConfigured;
         }
 
         public void OnCompleted(Action continuation)

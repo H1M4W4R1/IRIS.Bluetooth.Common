@@ -5,7 +5,7 @@ namespace IRIS.Bluetooth.Common.Utility
 {
     public sealed class BluetoothDeviceDiscoveryAwaiter(
         IBluetoothLEInterface bluetoothInterface,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     ) : INotifyCompletion
     {
         private Action _continuation = null!;
