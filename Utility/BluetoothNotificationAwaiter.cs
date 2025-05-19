@@ -88,7 +88,7 @@ namespace IRIS.Bluetooth.Common.Utility
 
             _result = newValue;
             _handled = true;
-            _continuation?.Invoke();
+            _continuation.Invoke();
         }
     }
 }

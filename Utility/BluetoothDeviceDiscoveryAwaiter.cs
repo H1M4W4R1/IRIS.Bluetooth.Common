@@ -70,7 +70,7 @@ namespace IRIS.Bluetooth.Common.Utility
             
             _device = device;
             bluetoothInterface.OnBluetoothDeviceDiscovered -= OnDeviceDiscovered;
-            _continuation?.Invoke();
+            _continuation.Invoke();
         }
     }
 }

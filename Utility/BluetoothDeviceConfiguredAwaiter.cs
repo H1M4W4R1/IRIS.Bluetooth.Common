@@ -71,7 +71,7 @@ namespace IRIS.Bluetooth.Common.Utility
             _handled = true;
 
             device.DeviceConfigured -= OnDeviceConfigured;
-            _continuation?.Invoke();
+            _continuation.Invoke();
         }
     }
 }

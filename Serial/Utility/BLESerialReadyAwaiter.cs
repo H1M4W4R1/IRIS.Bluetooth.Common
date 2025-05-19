@@ -63,7 +63,7 @@ namespace IRIS.Bluetooth.Common.Serial.Utility
 
             // Handle this awaiter and continue
             _handled = true;
-            _continuation?.Invoke();
+            _continuation.Invoke();
 
             serial.SerialReady -= OnSerialReady;
         }
