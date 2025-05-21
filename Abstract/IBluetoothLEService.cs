@@ -1,4 +1,6 @@
-﻿namespace IRIS.Bluetooth.Common.Abstract
+﻿using IRIS.Operations.Abstract;
+
+namespace IRIS.Bluetooth.Common.Abstract
 {
     /// <summary>
     ///     Represents a Bluetooth Low Energy (BLE) service, which is a collection of related characteristics.
@@ -38,11 +40,9 @@
         ///     Gets all characteristics that match the specified UUID pattern.
         /// </summary>
         /// <param name="characteristicUUIDRegex">Regular expression pattern to match characteristic UUIDs</param>
-        /// <returns>A read-only list of matching characteristics</returns>
         /// <remarks>
         ///     This method allows filtering characteristics by their UUID using a regular expression pattern.
         /// </remarks>
-        public IReadOnlyList<IBluetoothLECharacteristic> GetAllCharacteristicsForUUID(
-            string characteristicUUIDRegex);
+        public IDeviceOperationResult GetAllCharacteristicsForUUID(string characteristicUUIDRegex);
     }
 }

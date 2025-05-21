@@ -1,4 +1,5 @@
 ﻿using IRIS.Bluetooth.Common.Data;
+using IRIS.Operations.Abstract;
 
 namespace IRIS.Bluetooth.Common.Abstract
 {
@@ -77,7 +78,7 @@ namespace IRIS.Bluetooth.Common.Abstract
         /// </summary>
         /// <param name="cancellationToken">Token to cancel the operation</param>
         /// <returns>The characteristic value as a byte array, or null if the read operation failed</returns>
-        public ValueTask<byte[]?> ReadAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IDeviceOperationResult> ReadAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Writes a new value to the characteristic.
@@ -85,7 +86,9 @@ namespace IRIS.Bluetooth.Common.Abstract
         /// <param name="data">The data to write to the characteristic</param>
         /// <param name="cancellationToken">Token to cancel the operation</param>
         /// <returns>True if the write operation was successful, false otherwise</returns>
-        public ValueTask<bool> WriteAsync(byte[] data, CancellationToken cancellationToken = default);
+        public ValueTask<IDeviceOperationResult> WriteAsync(
+            byte[] data,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Subscribes to notifications for this characteristic.
@@ -95,13 +98,13 @@ namespace IRIS.Bluetooth.Common.Abstract
         /// <remarks>
         ///     After subscribing, the device will automatically send updates when the characteristic value changes.
         /// </remarks>
-        public ValueTask<bool> SubscribeAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IDeviceOperationResult> SubscribeAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Unsubscribes from notifications for this characteristic.
         /// </summary>
         /// <param name="cancellationToken">Token to cancel the operation</param>
         /// <returns>True if the unsubscription was successful or already inactive, false otherwise</returns>
-        public ValueTask<bool> UnsubscribeAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IDeviceOperationResult> UnsubscribeAsync(CancellationToken cancellationToken = default);
     }
 }

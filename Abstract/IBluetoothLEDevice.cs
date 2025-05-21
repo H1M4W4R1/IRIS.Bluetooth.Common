@@ -1,4 +1,6 @@
-﻿namespace IRIS.Bluetooth.Common.Abstract
+﻿using IRIS.Operations.Abstract;
+
+namespace IRIS.Bluetooth.Common.Abstract
 {
     /// <summary>
     ///     Represents a Bluetooth Low Energy (BLE) device and provides access to its services and characteristics.
@@ -27,6 +29,8 @@
         /// </summary>
         public bool IsConfigured { get; }
 
+        internal bool ConfigurationFailed { get; }
+        
         /// <summary>
         ///     Gets all services available on this device.
         /// </summary>
@@ -39,30 +43,24 @@
         ///     Gets all characteristics that match the specified UUID pattern.
         /// </summary>
         /// <param name="characteristicUUIDRegex">Regular expression pattern to match characteristic UUIDs</param>
-        /// <returns>A read-only list of matching characteristics</returns>
-        public IReadOnlyList<IBluetoothLECharacteristic> GetAllCharacteristicsForUUID(
-            string characteristicUUIDRegex);
+        public IDeviceOperationResult GetAllCharacteristicsForUUID(string characteristicUUIDRegex);
 
         /// <summary>
         ///     Gets all characteristics from services that match the specified UUID pattern.
         /// </summary>
         /// <param name="serviceUUIDRegex">Regular expression pattern to match service UUIDs</param>
-        /// <returns>A read-only list of characteristics from matching services</returns>
-        public IReadOnlyList<IBluetoothLECharacteristic> GetAllCharacteristicsForServices(
-            string serviceUUIDRegex);
+        public IDeviceOperationResult GetAllCharacteristicsForServices(string serviceUUIDRegex);
 
         /// <summary>
         ///     Gets all characteristics available on this device.
         /// </summary>
-        /// <returns>A read-only list of all characteristics across all services</returns>
-        public IReadOnlyList<IBluetoothLECharacteristic> GetAllCharacteristics();
+        public IDeviceOperationResult GetAllCharacteristics();
 
         /// <summary>
         ///     Gets all services that match the specified UUID pattern.
         /// </summary>
         /// <param name="serviceUUIDRegex">Regular expression pattern to match service UUIDs</param>
-        /// <returns>A read-only list of matching services</returns>
-        public IReadOnlyList<IBluetoothLEService> GetAllServicesForUUID(string serviceUUIDRegex);
+        public IDeviceOperationResult GetAllServicesForUUID(string serviceUUIDRegex);
 
         /// <summary>
         ///     Event raised when device is configured
