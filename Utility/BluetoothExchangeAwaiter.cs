@@ -1,5 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 using IRIS.Bluetooth.Common.Abstract;
+using IRIS.Operations;
+using IRIS.Operations.Abstract;
+using IRIS.Operations.Data;
+using IRIS.Operations.Generic;
 
 namespace IRIS.Bluetooth.Common.Utility
 {
@@ -33,7 +37,7 @@ namespace IRIS.Bluetooth.Common.Utility
         /// <summary>
         ///     The response data received from the Bluetooth Low Energy device.
         /// </summary>
-        private byte[] _result = [];
+        private IDeviceOperationResult _result = new DeviceNotRespondingResult();
 
         /// <summary>
         ///     Sets up the continuation and initiates the data exchange.
@@ -51,7 +55,13 @@ namespace IRIS.Bluetooth.Common.Utility
             rxCharacteristic.ValueChanged += OnNotificationReceived;
 
             // Transmit data
-            await txCharacteristic.WriteAsync(dataToTransmit);
+            if (DeviceOperation.IsSuccess(await txCharacteristic.WriteAsync(dataToTransmit),
+                    out IDeviceOperationResult proxyResult)) return;
+            
+            // Handle error
+            _result = proxyResult;
+            rxCharacteristic.ValueChanged -= OnNotificationReceived;
+            _continuation();
         }
 
         /// <summary>
@@ -61,7 +71,7 @@ namespace IRIS.Bluetooth.Common.Utility
         /// <remarks>
         ///     This method cleans up by unsubscribing from the ValueChanged event before returning the result.
         /// </remarks>
-        public byte[] GetResult()
+        public IDeviceOperationResult GetResult()
         {
             rxCharacteristic.ValueChanged -= OnNotificationReceived;
             return _result;
@@ -93,8 +103,8 @@ namespace IRIS.Bluetooth.Common.Utility
             if (_handled) return;
             
             bluetoothLECharacteristic.ValueChanged -= OnNotificationReceived;
-            
-            _result = newValue;
+
+            _result = new DeviceReadSuccessful<byte[]>(newValue);
             _handled = true;
             _continuation.Invoke();
         }

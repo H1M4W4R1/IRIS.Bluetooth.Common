@@ -2,6 +2,9 @@
 using IRIS.Bluetooth.Common.Abstract;
 using IRIS.Bluetooth.Common.Serial.Utility;
 using IRIS.Bluetooth.Common.Utility;
+using IRIS.Operations;
+using IRIS.Operations.Abstract;
+using IRIS.Operations.Data;
 
 namespace IRIS.Bluetooth.Common.Serial
 {
@@ -49,7 +52,7 @@ namespace IRIS.Bluetooth.Common.Serial
         ///     3. Transmits the data and waits for the response
         ///     4. Marks the connection as ready for the next operation
         /// </remarks>
-        public async ValueTask<byte[]> ExchangeRawData(
+        public async ValueTask<IDeviceOperationResult> ExchangeRawData(
             byte[] dataToTransmit,
             CancellationToken cancellationToken = default)
         {
@@ -60,8 +63,15 @@ namespace IRIS.Bluetooth.Common.Serial
             await new WaitForSerialReady(this, cancellationToken);
 
             // Wait for response from device
-            byte[] response = await new TransmitAndWaitForBluetoothNotification(
+            IDeviceOperationResult response = await new TransmitAndWaitForBluetoothNotification(
                 txCharacteristic, rxCharacteristic, dataToTransmit, cancellationToken);
+            
+            // Check if response is success
+            if (DeviceOperation.IsFailure(response, out IDeviceOperationResult proxyResult))
+                return proxyResult;
+            
+            // Check if response has proper data
+            if (response is not IDeviceOperationResult<byte[]>) return new DeviceReadFailedResult();
 
             // Serial is ready for next command
             IsReady = true;
@@ -82,7 +92,7 @@ namespace IRIS.Bluetooth.Common.Serial
         ///     If encoding is not provided all string encoding/decoding will be performed using
         ///     ASCII encoding.
         /// </remarks>
-        public async ValueTask<string> ExchangeMessages(
+        public async ValueTask<IDeviceOperationResult> ExchangeMessages(
             string messageToTransmit,
             Encoding? encoding = null,
             CancellationToken cancellationToken = default)
@@ -94,10 +104,18 @@ namespace IRIS.Bluetooth.Common.Serial
             byte[] dataToTransmit = encoding.GetBytes(messageToTransmit);
 
             // Exchange data and get response
-            byte[] dataReceived = await ExchangeRawData(dataToTransmit, cancellationToken);
-
+            IDeviceOperationResult dataReceived = await ExchangeRawData(dataToTransmit, cancellationToken);
+            
+            // Check for failure
+            if (DeviceOperation.IsFailure(dataReceived, out IDeviceOperationResult proxyResult))
+                return proxyResult;
+            
+            // Check if response has proper data
+            if (dataReceived is not IDeviceOperationResult<byte[]> deviceOperationResult)
+                return new DeviceReadFailedResult();
+         
             // Convert response to string
-            return encoding.GetString(dataReceived);
+            return new DeviceReadSuccessful<string>(encoding.GetString(deviceOperationResult.Data));
         }
     }
 }
