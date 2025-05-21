@@ -3,7 +3,8 @@
 namespace IRIS.Bluetooth.Common.Utility
 {
     /// <summary>
-    ///     Provides an awaitable implementation for transmitting data and waiting for a response from a Bluetooth Low Energy device.
+    ///     Provides an awaitable implementation for transmitting data and waiting for a response from a Bluetooth Low Energy
+    ///     device.
     /// </summary>
     /// <remarks>
     ///     This struct wraps the BluetoothExchangeAwaiter to provide a clean awaitable interface

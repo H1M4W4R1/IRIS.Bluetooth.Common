@@ -16,7 +16,7 @@
         ///     Every service must belong to a device in the BLE protocol.
         /// </remarks>
         public IBluetoothLEDevice Device { get; }
-        
+
         /// <summary>
         ///     Gets the UUID of the service.
         /// </summary>
@@ -25,7 +25,7 @@
         ///     Standard BLE services have predefined UUIDs, while custom services use vendor-specific UUIDs.
         /// </remarks>
         public string UUID { get; }
-        
+
         /// <summary>
         ///     Gets all characteristics that belong to this service.
         /// </summary>
@@ -33,7 +33,7 @@
         ///     The list is read-only and contains all discovered characteristics for this service.
         /// </remarks>
         public IReadOnlyList<IBluetoothLECharacteristic> Characteristics { get; }
-        
+
         /// <summary>
         ///     Gets all characteristics that match the specified UUID pattern.
         /// </summary>

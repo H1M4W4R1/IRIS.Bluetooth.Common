@@ -22,9 +22,10 @@ namespace IRIS.Bluetooth.Common.Addressing
         ///     The pattern should be a valid regular expression that can match the target device names.
         /// </remarks>
         public string NameRegex { get; } = deviceNameRegex;
-        
+
         /// <summary>
-        ///     Determines if a discovered device matches this address by comparing its name against the regular expression pattern.
+        ///     Determines if a discovered device matches this address by comparing its name against the regular expression
+        ///     pattern.
         /// </summary>
         /// <param name="device">The device to validate</param>
         /// <returns>True if the device's name matches the regular expression pattern, false otherwise</returns>

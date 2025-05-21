@@ -3,7 +3,8 @@
 namespace IRIS.Bluetooth.Common.Addressing
 {
     /// <summary>
-    ///     Represents a Bluetooth Low Energy device address that identifies devices by the presence of a specific service UUID.
+    ///     Represents a Bluetooth Low Energy device address that identifies devices by the presence of a specific service
+    ///     UUID.
     /// </summary>
     /// <remarks>
     ///     This address type is used when you need to discover devices that provide a specific service.

@@ -9,8 +9,8 @@ namespace IRIS.Bluetooth.Common.Abstract
     /// <remarks>
     ///     New revision of BluetoothInterface is responsible only for finding devices (discovering them) and validating
     ///     if found devices have proper address. Multiple devices can be connected to same interface, so compared to previous
-    ///     revisions all characteristic and service related methods were moved to <see cref="IBluetoothLEDevice"/> interface.
-    ///     <br/>--<br/>
+    ///     revisions all characteristic and service related methods were moved to <see cref="IBluetoothLEDevice" /> interface.
+    ///     <br />--<br />
     ///     This reduces amount of mess in the code and makes it easier to maintain and understand.
     /// </remarks>
     public interface IBluetoothLEInterface : ICommunicationInterface<IBluetoothLEAddress>

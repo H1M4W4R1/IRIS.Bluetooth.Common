@@ -34,7 +34,7 @@ namespace IRIS.Bluetooth.Common.Utility
         ///     The response data received from the Bluetooth Low Energy device.
         /// </summary>
         private byte[] _result = [];
-        
+
         /// <summary>
         ///     Sets up the continuation and initiates the data exchange.
         /// </summary>
@@ -66,7 +66,7 @@ namespace IRIS.Bluetooth.Common.Utility
             rxCharacteristic.ValueChanged -= OnNotificationReceived;
             return _result;
         }
-        
+
         /// <summary>
         ///     Gets a value indicating whether the data exchange operation is completed.
         /// </summary>
@@ -74,7 +74,7 @@ namespace IRIS.Bluetooth.Common.Utility
         ///     Returns true if either the notification has been handled or the cancellation token has been cancelled.
         /// </remarks>
         public bool IsCompleted => _handled || cancellationToken.IsCancellationRequested;
-        
+
         /// <summary>
         ///     Handles the ValueChanged event from the RX characteristic.
         /// </summary>

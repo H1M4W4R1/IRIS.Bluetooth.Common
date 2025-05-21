@@ -36,13 +36,12 @@ namespace IRIS.Bluetooth.Common.Serial
         ///     the connection is ready to handle the next transmission.
         /// </remarks>
         public event SerialReadyHandler? SerialReady;
-        
+
         /// <summary>
         ///     Exchanges raw byte data with the connected Bluetooth Low Energy device.
         /// </summary>
         /// <param name="dataToTransmit">The byte array containing the data to transmit.</param>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the response data as a byte array.</returns>
         /// <remarks>
         ///     This method:
         ///     1. Ensures the RX characteristic is subscribed for notifications
@@ -75,25 +74,30 @@ namespace IRIS.Bluetooth.Common.Serial
         ///     Exchanges string messages with the connected Bluetooth Low Energy device.
         /// </summary>
         /// <param name="messageToTransmit">The string message to transmit.</param>
+        /// <param name="encoding">The encoding to use for string conversion, ASCII if null.</param>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the response as a string.</returns>
         /// <remarks>
-        ///     This method converts the input string to ASCII bytes, exchanges the data using
-        ///     <see cref="ExchangeRawData"/>, and converts the response back to a string.
-        ///     All string encoding/decoding is performed using ASCII encoding.
+        ///     This method converts the input string to bytes, exchanges the data using
+        ///     <see cref="ExchangeRawData" />, and converts the response back to a string.
+        ///     If encoding is not provided all string encoding/decoding will be performed using
+        ///     ASCII encoding.
         /// </remarks>
         public async ValueTask<string> ExchangeMessages(
             string messageToTransmit,
+            Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
+            // Ensure encoding is not null
+            encoding ??= Encoding.ASCII;
+            
             // Convert message to bytes
-            byte[] dataToTransmit = Encoding.ASCII.GetBytes(messageToTransmit);
+            byte[] dataToTransmit = encoding.GetBytes(messageToTransmit);
 
             // Exchange data and get response
             byte[] dataReceived = await ExchangeRawData(dataToTransmit, cancellationToken);
 
             // Convert response to string
-            return Encoding.ASCII.GetString(dataReceived);
+            return encoding.GetString(dataReceived);
         }
     }
 }

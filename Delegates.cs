@@ -9,7 +9,7 @@ namespace IRIS.Bluetooth.Common
     /// <param name="newValue">The new value of the characteristic</param>
     /// <remarks>
     ///     This delegate is used to handle notifications when a characteristic's value changes.
-    ///     It is typically used in conjunction with the <see cref="IBluetoothLECharacteristic.SubscribeAsync"/> method.
+    ///     It is typically used in conjunction with the <see cref="IBluetoothLECharacteristic.SubscribeAsync" /> method.
     /// </remarks>
     public delegate void CharacteristicValueChangedHandler(
         IBluetoothLECharacteristic characteristic,

@@ -12,7 +12,7 @@
         ///     The name may be empty if the device doesn't broadcast its name.
         /// </remarks>
         public string Name { get; }
-        
+
         /// <summary>
         ///     Gets the unique device address (MAC address) of the Bluetooth device.
         /// </summary>
@@ -21,12 +21,12 @@
         ///     which should be converted to ulong by removing ':' characters.
         /// </remarks>
         public ulong DeviceAddress { get; }
-        
+
         /// <summary>
         ///     Checks if the device is currently configured.
         /// </summary>
         public bool IsConfigured { get; }
-        
+
         /// <summary>
         ///     Gets all services available on this device.
         /// </summary>
@@ -34,7 +34,7 @@
         ///     The list is read-only and contains all discovered services on the device.
         /// </remarks>
         public IReadOnlyList<IBluetoothLEService> Services { get; }
-        
+
         /// <summary>
         ///     Gets all characteristics that match the specified UUID pattern.
         /// </summary>
@@ -50,13 +50,13 @@
         /// <returns>A read-only list of characteristics from matching services</returns>
         public IReadOnlyList<IBluetoothLECharacteristic> GetAllCharacteristicsForServices(
             string serviceUUIDRegex);
-        
+
         /// <summary>
         ///     Gets all characteristics available on this device.
         /// </summary>
         /// <returns>A read-only list of all characteristics across all services</returns>
         public IReadOnlyList<IBluetoothLECharacteristic> GetAllCharacteristics();
-        
+
         /// <summary>
         ///     Gets all services that match the specified UUID pattern.
         /// </summary>
@@ -65,7 +65,7 @@
         public IReadOnlyList<IBluetoothLEService> GetAllServicesForUUID(string serviceUUIDRegex);
 
         /// <summary>
-        /// Event raised when device is configured
+        ///     Event raised when device is configured
         /// </summary>
         public event DeviceConfiguredHandler DeviceConfigured;
     }

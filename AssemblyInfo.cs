@@ -1,7 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
 
-
 // Make internals visible to all IRIS.Bluetooth projects
 [assembly: InternalsVisibleTo("IRIS.Bluetooth")]
 [assembly: InternalsVisibleTo("IRIS.Bluetooth.Windows")]
