@@ -2,6 +2,7 @@
 using IRIS.Bluetooth.Common.Abstract;
 using IRIS.Operations;
 using IRIS.Operations.Abstract;
+using IRIS.Operations.Attributes;
 using IRIS.Operations.Data;
 using IRIS.Operations.Generic;
 
@@ -71,6 +72,7 @@ namespace IRIS.Bluetooth.Common.Utility
         /// <remarks>
         ///     This method cleans up by unsubscribing from the ValueChanged event before returning the result.
         /// </remarks>
+        [OperationReadType(typeof(byte[]))]
         public IDeviceOperationResult GetResult()
         {
             rxCharacteristic.ValueChanged -= OnNotificationReceived;

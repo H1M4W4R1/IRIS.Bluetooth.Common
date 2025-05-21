@@ -4,6 +4,7 @@ using IRIS.Bluetooth.Common.Serial.Utility;
 using IRIS.Bluetooth.Common.Utility;
 using IRIS.Operations;
 using IRIS.Operations.Abstract;
+using IRIS.Operations.Attributes;
 using IRIS.Operations.Data;
 
 namespace IRIS.Bluetooth.Common.Serial
@@ -52,6 +53,7 @@ namespace IRIS.Bluetooth.Common.Serial
         ///     3. Transmits the data and waits for the response
         ///     4. Marks the connection as ready for the next operation
         /// </remarks>
+        [OperationReadType(typeof(byte[]))]
         public async ValueTask<IDeviceOperationResult> ExchangeRawData(
             byte[] dataToTransmit,
             CancellationToken cancellationToken = default)
@@ -92,6 +94,7 @@ namespace IRIS.Bluetooth.Common.Serial
         ///     If encoding is not provided all string encoding/decoding will be performed using
         ///     ASCII encoding.
         /// </remarks>
+        [OperationReadType(typeof(string))]
         public async ValueTask<IDeviceOperationResult> ExchangeMessages(
             string messageToTransmit,
             Encoding? encoding = null,
