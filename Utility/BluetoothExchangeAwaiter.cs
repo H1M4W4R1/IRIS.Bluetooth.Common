@@ -22,7 +22,8 @@ namespace IRIS.Bluetooth.Common.Utility
         IBluetoothLECharacteristic txCharacteristic,
         IBluetoothLECharacteristic rxCharacteristic,
         byte[] dataToTransmit,
-        CancellationToken cancellationToken = default) 
+        CancellationToken cancellationToken = default,
+        Predicate<byte[]>? validateReceivedData = null) 
         : INotifyCompletion
     {
         /// <summary>
@@ -103,6 +104,9 @@ namespace IRIS.Bluetooth.Common.Utility
         private void OnNotificationReceived(IBluetoothLECharacteristic bluetoothLECharacteristic, byte[] newValue)
         {
             if (_handled) return;
+
+            // Validate received data - if validation provided and not met we skip
+            if (validateReceivedData != null && !validateReceivedData(newValue)) return;
             
             bluetoothLECharacteristic.ValueChanged -= OnNotificationReceived;
 

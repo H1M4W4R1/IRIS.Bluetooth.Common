@@ -16,7 +16,8 @@ namespace IRIS.Bluetooth.Common.Utility
     public readonly struct TransmitAndWaitForBluetoothNotification(IBluetoothLECharacteristic txCharacteristic,
         IBluetoothLECharacteristic rxCharacteristic,
         byte[] dataToTransmit,
-        CancellationToken cancellationToken = default
+        CancellationToken cancellationToken = default,
+        Predicate<byte[]>? validateReceivedData = null
     )
     {
         /// <summary>
@@ -28,6 +29,6 @@ namespace IRIS.Bluetooth.Common.Utility
         ///     handle the asynchronous data exchange process.
         /// </remarks>
         public BluetoothExchangeAwaiter GetAwaiter()
-            => new(txCharacteristic, rxCharacteristic, dataToTransmit, cancellationToken);
+            => new(txCharacteristic, rxCharacteristic, dataToTransmit, cancellationToken, validateReceivedData);
     }
 }

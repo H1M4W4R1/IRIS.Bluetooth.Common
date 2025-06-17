@@ -46,6 +46,7 @@ namespace IRIS.Bluetooth.Common.Serial
         /// </summary>
         /// <param name="dataToTransmit">The byte array containing the data to transmit.</param>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+        /// <param name="validateReceivedData">A predicate to validate the received data.</param>
         /// <remarks>
         ///     This method:
         ///     1. Ensures the RX characteristic is subscribed for notifications
@@ -56,7 +57,8 @@ namespace IRIS.Bluetooth.Common.Serial
         [OperationReadType(typeof(byte[]))]
         public async ValueTask<IDeviceOperationResult> ExchangeRawData(
             byte[] dataToTransmit,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            Predicate<byte[]>? validateReceivedData = null)
         {
             // Ensure RX characteristic is subscribed
             await rxCharacteristic.SubscribeAsync(cancellationToken);
@@ -64,9 +66,13 @@ namespace IRIS.Bluetooth.Common.Serial
             // Wait for serial to be ready to prevent multiple transmissions at same time
             await new WaitForSerialReady(this, cancellationToken);
 
+            // Steal the serial port and wait for 4ms to prevent collisions
+            IsReady = false;
+            await Task.Delay(4, cancellationToken);
+
             // Wait for response from device
             IDeviceOperationResult response = await new TransmitAndWaitForBluetoothNotification(
-                txCharacteristic, rxCharacteristic, dataToTransmit, cancellationToken);
+                txCharacteristic, rxCharacteristic, dataToTransmit, cancellationToken, validateReceivedData);
             
             // Check if response is success
             if (DeviceOperation.IsFailure(response, out IDeviceOperationResult proxyResult))
@@ -83,11 +89,57 @@ namespace IRIS.Bluetooth.Common.Serial
         }
 
         /// <summary>
+        ///     Writes raw byte data to the connected Bluetooth Low Energy device.
+        /// </summary>
+        /// <param name="dataToTransmit">Data to transmit.</param>
+        /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+        /// <returns>Result of the write operation.</returns>
+        public async ValueTask<IDeviceOperationResult> WriteRawData(
+            byte[] dataToTransmit,
+            CancellationToken cancellationToken = default)
+        {
+            // Wait for serial to be ready to prevent multiple transmissions at same time
+            await new WaitForSerialReady(this, cancellationToken);
+
+            // Write data to the device
+            IDeviceOperationResult response = await txCharacteristic.WriteAsync(dataToTransmit, cancellationToken);
+            
+            // Serial is ready for next command
+            IsReady = true;
+            SerialReady?.Invoke();
+            
+            return response;
+        }
+
+        /// <summary>
+        ///     Writes a string message to the connected Bluetooth Low Energy device.
+        /// </summary>
+        /// <param name="messageToTransmit">Message to transmit.</param>
+        /// <param name="encoding">Encoding to use for string conversion, ASCII if null.</param>
+        /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+        /// <returns>Result of the write operation.</returns>
+        public async ValueTask<IDeviceOperationResult> WriteMessage(
+            string messageToTransmit,
+            Encoding? encoding = null,
+            CancellationToken cancellationToken = default)
+        {
+            // Ensure encoding is not null
+            encoding ??= Encoding.ASCII;
+            
+            // Convert message to bytes
+            byte[] dataToTransmit = encoding.GetBytes(messageToTransmit);
+            
+            // Write data to the device
+            return await WriteRawData(dataToTransmit, cancellationToken);
+        }
+        
+        /// <summary>
         ///     Exchanges string messages with the connected Bluetooth Low Energy device.
         /// </summary>
         /// <param name="messageToTransmit">The string message to transmit.</param>
         /// <param name="encoding">The encoding to use for string conversion, ASCII if null.</param>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+        /// <param name="validateResponseData">A predicate to validate the received data.</param>
         /// <remarks>
         ///     This method converts the input string to bytes, exchanges the data using
         ///     <see cref="ExchangeRawData" />, and converts the response back to a string.
@@ -98,7 +150,8 @@ namespace IRIS.Bluetooth.Common.Serial
         public async ValueTask<IDeviceOperationResult> ExchangeMessages(
             string messageToTransmit,
             Encoding? encoding = null,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            Predicate<string>? validateResponseData = null)
         {
             // Ensure encoding is not null
             encoding ??= Encoding.ASCII;
@@ -107,7 +160,7 @@ namespace IRIS.Bluetooth.Common.Serial
             byte[] dataToTransmit = encoding.GetBytes(messageToTransmit);
 
             // Exchange data and get response
-            IDeviceOperationResult dataReceived = await ExchangeRawData(dataToTransmit, cancellationToken);
+            IDeviceOperationResult dataReceived = await ExchangeRawData(dataToTransmit, cancellationToken, ValidateResponseRaw);
             
             // Check for failure
             if (DeviceOperation.IsFailure(dataReceived, out IDeviceOperationResult proxyResult))
@@ -119,6 +172,19 @@ namespace IRIS.Bluetooth.Common.Serial
          
             // Convert response to string
             return new DeviceReadSuccessful<string>(encoding.GetString(deviceOperationResult.Data));
+
+            // Internal method to validate response data
+            bool ValidateResponseRaw(byte[] responseData)
+            {
+                // Convert to string
+                string responseString = encoding.GetString(responseData);
+
+                // If no validation provided, return true
+                if (validateResponseData == null) return true;
+
+                // Perform validation
+                return validateResponseData(responseString);
+            }
         }
     }
 }
