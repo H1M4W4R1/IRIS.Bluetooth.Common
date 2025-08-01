@@ -32,6 +32,18 @@ namespace IRIS.Bluetooth.Common.Abstract
         /// <param name="device">Device to release</param>
         public ValueTask ReleaseDevice(IBluetoothLEDevice device);
         
+        /// <summary>
+        ///     Check if device with specified address is connected
+        /// </summary>
+        /// <param name="deviceBluetoothAddress">Address of BLE device</param>
+        public bool IsDeviceConnected(ulong deviceBluetoothAddress);
+        
+        /// <summary>
+        ///     Check if device with specified address is discovered
+        /// </summary>
+        /// <param name="deviceBluetoothAddress">Address of BLE device</param>
+        public bool IsDeviceDiscovered(ulong deviceBluetoothAddress);
+
         public event DeviceDiscoveredHandler OnBluetoothDeviceDiscovered;
         public event DeviceConnectedHandler OnBluetoothDeviceConnected;
         public event DeviceDisconnectedHandler OnBluetoothDeviceDisconnected;
