@@ -20,6 +20,12 @@ namespace IRIS.Bluetooth.Common.Abstract
         public IReadOnlyList<IBluetoothLEDevice> ConnectedDevices { get; }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether the interface is currently scanning for devices.
+        ///     This property is used internally to track the scanning state.
+        /// </summary>
+        public bool IsRunning { get; }
+        
+        /// <summary>
         ///     Claim device to be used for communication.
         /// </summary>
         /// <param name="cancellationToken">Token to cancel the operation</param>
