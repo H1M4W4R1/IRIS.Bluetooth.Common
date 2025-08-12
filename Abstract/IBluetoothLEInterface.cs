@@ -28,9 +28,12 @@ namespace IRIS.Bluetooth.Common.Abstract
         /// <summary>
         ///     Claim device to be used for communication.
         /// </summary>
+        /// <param name="deviceAddress">Address of exact device to find or null if any</param>
         /// <param name="cancellationToken">Token to cancel the operation</param>
         /// <returns>Device that was claimed or null if failed</returns>
-        public ValueTask<IBluetoothLEDevice?> ClaimDevice(CancellationToken cancellationToken = default);
+        public ValueTask<IBluetoothLEDevice?> ClaimDevice(
+            IBluetoothLEAddress? deviceAddress = null,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Release device that was claimed for communication.
